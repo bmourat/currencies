@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Currency Converter</string>
+    <string name="converter_fragment_title">Rates</string>
+</resources>
