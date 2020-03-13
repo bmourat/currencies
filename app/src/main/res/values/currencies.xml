@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="currency_codes">
+        <item>AUD</item>
+        <item>BGN</item>
+        <item>BRL</item>
+        <item>CAD</item>
+        <item>CHF</item>
+        <item>CNY</item>
+        <item>CZK</item>
+        <item>DKK</item>
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>HKD</item>
+        <item>HRK</item>
+        <item>HUF</item>
+        <item>IDR</item>
+        <item>ILS</item>
+        <item>INR</item>
+        <item>ISK</item>
+        <item>JPY</item>
+        <item>KRW</item>
+        <item>MXN</item>
+        <item>MYR</item>
+        <item>NOK</item>
+        <item>NZD</item>
+        <item>PHP</item>
+        <item>PLN</item>
+        <item>RON</item>
+        <item>RUB</item>
+        <item>SEK</item>
+        <item>SGD</item>
+        <item>THB</item>
+        <item>USD</item>
+        <item>ZAR</item>
+    </array>
+    <array name="currency_names">
+        <item>Australian Dollar</item>
+        <item>Bulgarian Lev</item>
+        <item>Brazilian Real</item>
+        <item>Canadian Dollar</item>
+        <item>Swiss Franc</item>
+        <item>Chinese Yuan</item>
+        <item>Czech Koruna</item>
+        <item>Danish Krone</item>
+        <item>Euro</item>
+        <item>British Pound</item>
+        <item>Hong Kong Dollar</item>
+        <item>Croatian Kuna</item>
+        <item>Hungarian Forint</item>
+        <item>Indonesian Rupiah</item>
+        <item>Israeli New Shekel</item>
+        <item>Indian Rupee</item>
+        <item>Icelandic Króna</item>
+        <item>Japanese Yen</item>
+        <item>South Korean Won</item>
+        <item>Mexican Peso</item>
+        <item>Malaysian Ringgit</item>
+        <item>Norwegian Krone</item>
+        <item>New Zealand Dollar</item>
+        <item>Philippine Peso</item>
+        <item>Polish Złoty</item>
+        <item>Romanian Leu</item>
+        <item>Russian Ruble</item>
+        <item>Swedish Krona</item>
+        <item>Singapore Dollar</item>
+        <item>Thai Baht</item>
+        <item>US Dollar</item>
+        <item>South African Rand</item>
+    </array>
+    <array name="currency_flags">
+        <item>@drawable/ic_currency_aud</item>
+        <item>@drawable/ic_currency_bgn</item>
+        <item>@drawable/ic_currency_brl</item>
+        <item>@drawable/ic_currency_cad</item>
+        <item>@drawable/ic_currency_chf</item>
+        <item>@drawable/ic_currency_cny</item>
+        <item>@drawable/ic_currency_czk</item>
+        <item>@drawable/ic_currency_dkk</item>
+        <item>@drawable/ic_currency_eur</item>
+        <item>@drawable/ic_currency_gbp</item>
+        <item>@drawable/ic_currency_hkd</item>
+        <item>@drawable/ic_currency_hrk</item>
+        <item>@drawable/ic_currency_huf</item>
+        <item>@drawable/ic_currency_idr</item>
+        <item>@drawable/ic_currency_ils</item>
+        <item>@drawable/ic_currency_inr</item>
+        <item>@drawable/ic_currency_isk</item>
+        <item>@drawable/ic_currency_jpy</item>
+        <item>@drawable/ic_currency_krw</item>
+        <item>@drawable/ic_currency_mxn</item>
+        <item>@drawable/ic_currency_myr</item>
+        <item>@drawable/ic_currency_nok</item>
+        <item>@drawable/ic_currency_nzd</item>
+        <item>@drawable/ic_currency_php</item>
+        <item>@drawable/ic_currency_pln</item>
+        <item>@drawable/ic_currency_ron</item>
+        <item>@drawable/ic_currency_rub</item>
+        <item>@drawable/ic_currency_sek</item>
+        <item>@drawable/ic_currency_sgd</item>
+        <item>@drawable/ic_currency_thb</item>
+        <item>@drawable/ic_currency_usd</item>
+        <item>@drawable/ic_currency_zar</item>
+    </array>
+</resources>
