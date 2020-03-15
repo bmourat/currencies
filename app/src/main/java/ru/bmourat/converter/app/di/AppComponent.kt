@@ -1,6 +1,7 @@
 package ru.bmourat.converter.app.di
 
 import dagger.Component
+import ru.bmourat.converter.app.ConverterApp
 import ru.bmourat.converter.quotes.di.QuotesComponent
 import ru.bmourat.converter.quotes.di.QuotesModule
 import javax.inject.Singleton
@@ -13,7 +14,11 @@ interface AppComponent {
 
     class Initializer private constructor() {
         companion object {
-            fun init(): AppComponent = DaggerAppComponent.create()
+            fun init(app: ConverterApp): AppComponent {
+                return DaggerAppComponent.builder()
+                    .appModule(AppModule(app))
+                    .build()
+            }
         }
     }
 }

@@ -13,5 +13,5 @@ class ConverterApp: Application(), IHasComponent<AppComponent>{
         XInjectionManager.bindComponent(this)
     }
 
-    override fun getComponent(): AppComponent = AppComponent.Initializer.init()
+    override fun getComponent(): AppComponent = AppComponent.Initializer.init(this)
 }

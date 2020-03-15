@@ -42,16 +42,24 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
+    //Rx
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
 
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
+    implementation "com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0"
+
+    //Dagger 2
+    api 'com.google.dagger:dagger:2.26'
+    kapt 'com.google.dagger:dagger-compiler:2.26'
+
+    //Moxy
     implementation "com.github.moxy-community:moxy:2.1.2"
     implementation "com.github.moxy-community:moxy-androidx:2.1.2"
     implementation "com.github.moxy-community:moxy-ktx:2.1.2"
     kapt "com.github.moxy-community:moxy-compiler:2.1.2"
-
-    api 'com.google.dagger:dagger:2.26'
-    kapt 'com.google.dagger:dagger-compiler:2.26'
 
     implementation "com.github.valeryponomarenko.componentsmanager:androidx:2.1.0"
 
