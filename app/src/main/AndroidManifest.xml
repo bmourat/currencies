@@ -13,7 +13,7 @@
       android:theme="@style/AppTheme"
       android:name=".app.ConverterApp"
       android:fullBackupContent="false">
-    <activity android:name=".MainActivity">
+    <activity android:name=".ui.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
 

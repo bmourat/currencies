@@ -1,4 +1,4 @@
-package ru.bmourat.converter.quotes
+package ru.bmourat.converter.ui.rates
 
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndStrategy
@@ -6,5 +6,6 @@ import moxy.viewstate.strategy.StateStrategyType
 
 
 @StateStrategyType(AddToEndStrategy::class)
-interface QuotesView: MvpView {
+interface RatesView: MvpView {
+    fun renderState(viewState: RatesViewState)
 }

@@ -2,4 +2,7 @@
 <resources>
     <string name="base_url">https://hiring.revolut.codes/</string>
     <string name="default_base_currency">EUR</string>
+    <integer name="initial_convert_amount">100</integer>
+    <integer name="conversion_result_scale">2</integer>
+    <integer name="server_refresh_interval_ms">1000</integer>
 </resources>
