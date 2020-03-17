@@ -1,9 +1,7 @@
 package ru.bmourat.converter.domain.model
 
-import java.math.BigDecimal
-
-typealias CurrencyCode = String
-typealias Rate = BigDecimal
+import ru.bmourat.converter.domain.CurrencyCode
+import ru.bmourat.converter.domain.Rate
 
 class CurrencyRates(private val rates: Map<CurrencyCode, Rate>) {
 

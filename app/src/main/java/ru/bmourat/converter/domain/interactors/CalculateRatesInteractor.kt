@@ -1,10 +1,10 @@
 package ru.bmourat.converter.domain.interactors
 
 import io.reactivex.rxjava3.core.Observable
+import ru.bmourat.converter.domain.CurrencyCode
 import ru.bmourat.converter.domain.converter.CurrencyConverter
 import ru.bmourat.converter.domain.error.Error
 import ru.bmourat.converter.domain.model.CalculateRatesModel
-import ru.bmourat.converter.domain.model.CurrencyCode
 import ru.bmourat.converter.domain.model.CurrencyRate
 import ru.bmourat.converter.domain.model.CurrencyRates
 import java.math.BigDecimal
