@@ -1,6 +1,6 @@
 package ru.bmourat.converter.domain.converter
 
-import ru.bmourat.converter.domain.model.Rate
+import ru.bmourat.converter.domain.Rate
 import java.math.BigDecimal
 
 interface CurrencyConverter {

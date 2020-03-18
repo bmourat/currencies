@@ -17,22 +17,23 @@ import java.util.concurrent.TimeUnit
 
 
 class RefreshRatesInteractorTest {
-
+    private val refreshIntervalMs = 1000L
     private val testSchedulers = TestSchedulers(TestScheduler())
     private val currencyRatesRepository = mock(CurrencyRatesRepository::class.java)
+    private val sut = RefreshRatesInteractor(refreshIntervalMs, testSchedulers, currencyRatesRepository)
 
     @Test
     fun `currencyRates are not null after successful emit`() {
         //Given
         `when`(currencyRatesRepository.rates()).thenReturn(Single.just(CurrencyRates(emptyMap())))
-        val refreshRatesInteractor = RefreshRatesInteractor(1000L, testSchedulers, currencyRatesRepository)
-        assertNull(refreshRatesInteractor.currentRates)
+        assertNull(sut.currentRates)
 
         //When
-        val observer = refreshRatesInteractor.observeRates().test()
+        val observer = sut.observeRates().test()
 
         //Then
-        assertNotNull(refreshRatesInteractor.currentRates)
+        assertNotNull(sut.currentRates)
+
         observer.dispose()
     }
 
@@ -42,15 +43,16 @@ class RefreshRatesInteractorTest {
         val errorModel = Either.Left(Error.NetworkConnection) as CurrencyRatesModel
         val errorItem = Single.error<CurrencyRates>(Exception())
         `when`(currencyRatesRepository.rates()).thenReturn(errorItem)
-        val refreshRatesInteractor = RefreshRatesInteractor(1000L, testSchedulers, currencyRatesRepository)
 
         //When
-        val testObserver = refreshRatesInteractor.observeRates().test()
+        val testObserver = sut.observeRates().test()
 
         //Then
         testObserver.assertNotComplete()
         testObserver.assertValueCount(1)
         testObserver.assertValues(errorModel)
+
+        testObserver.dispose()
     }
 
     @Test
@@ -59,10 +61,9 @@ class RefreshRatesInteractorTest {
         val validItem = Single.just(CurrencyRates(emptyMap()))
         val errorItem = Single.error<CurrencyRates>(Exception())
         `when`(currencyRatesRepository.rates()).thenReturn(validItem)
-        val refreshRatesInteractor = RefreshRatesInteractor(1000L, testSchedulers, currencyRatesRepository)
         
         //When
-        val testObserver = refreshRatesInteractor.observeRates().test()
+        val testObserver = sut.observeRates().test()
 
         //Then
         testObserver.assertNotComplete()
