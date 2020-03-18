@@ -68,10 +68,12 @@ class AppModule(private val app: ConverterApp) {
     }
 
     @Provides
-    fun refreshRatesInteractor(currencyRatesRepository: CurrencyRatesRepository): RefreshRatesInteractor {
+    fun refreshRatesInteractor(currencyRatesRepository: CurrencyRatesRepository,
+                               appSchedulers: AppSchedulers): RefreshRatesInteractor {
         val refreshInterval = app.resources.getInteger(R.integer.server_refresh_interval_ms)
         return RefreshRatesInteractor(
             refreshInterval.toLong(),
+            appSchedulers,
             currencyRatesRepository
         )
     }
