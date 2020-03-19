@@ -78,30 +78,46 @@ class RatesAdapter(
         }
 
         fun bindAmount(model: RateViewModel) {
+            if (adapterPosition == 0) bindBaseCurrency(model) else bindCurrency(model)
+        }
+
+        private fun bindBaseCurrency(model: RateViewModel) {
             val rate = model.currencyRate.rate.toString()
-            if (adapterPosition == 0) bindBaseCurrency(rate) else bindCurrency(rate)
+            with(currencyAmount) {
+                setReadOnly(false)
+                if (updateBaseCurrencyAmount) {
+                    setText(rate)
+                    setSelection(rate.length)
+                }
+                error = if (hasInputFormatError) {
+                    itemView.resources.getString(R.string.input_format_error)
+                } else {
+                    null
+                }
+                addTextChangedListener(textWatcher)
+                filters = arrayOf(DecimalFilter(2))
+                setOnClickListener(null)
+            }
+            with(itemView) {
+                setOnClickListener(null)
+                isFocusable = true
+                isFocusableInTouchMode = true
+            }
         }
 
-        private fun bindBaseCurrency(rate: String) {
-            currencyAmount.setReadOnly(false)
-            if (updateBaseCurrencyAmount) {
-                currencyAmount.setText(rate)
-                currencyAmount.setSelection(rate.length)
+        private fun bindCurrency(model: RateViewModel) {
+            val rate = model.currencyRate.rate.toString()
+            with(currencyAmount) {
+                setReadOnly(true)
+                removeTextChangedListener(textWatcher)
+                setText(rate)
+                setOnClickListener{baseCurrencyChanged(model.currencyRate)}
             }
-            currencyAmount.addTextChangedListener(textWatcher)
-            if (hasInputFormatError) {
-                currencyAmount.error = itemView.resources.getString(R.string.input_format_error)
-            } else {
-                currencyAmount.error = null
+            with(itemView) {
+                setOnClickListener{baseCurrencyChanged(model.currencyRate)}
+                isFocusable = false
+                isFocusableInTouchMode = false
             }
-            currencyAmount.filters = arrayOf(DecimalFilter(2))
-        }
-
-        private fun bindCurrency(rate: String) {
-            currencyAmount.setReadOnly(true)
-            currencyAmount.removeTextChangedListener(textWatcher)
-            currencyAmount.setText(rate)
-            currencyAmount.setSelection(rate.length)
         }
     }
 }

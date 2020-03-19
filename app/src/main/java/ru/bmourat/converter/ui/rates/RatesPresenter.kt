@@ -3,6 +3,7 @@ package ru.bmourat.converter.ui.rates
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import moxy.MvpPresenter
 import ru.bmourat.converter.domain.interactors.CalculateRatesInteractor
+import ru.bmourat.converter.domain.model.CalculateRatesModel
 import ru.bmourat.converter.domain.model.CurrencyRate
 import ru.bmourat.converter.utils.AppSchedulers
 import javax.inject.Inject
@@ -21,13 +22,8 @@ class RatesPresenter @Inject constructor(private val appSchedulers: AppScheduler
         disposables.add(calculateRatesInteractor.observeCalculatedRates()
             .subscribeOn(appSchedulers.io())
             .observeOn(appSchedulers.main())
-            .map{ mapper.mapToState(it, updateBaseCurrencyAmount)}
-            .subscribe {
-                viewState.renderState(it)
-                if (updateBaseCurrencyAmount) {
-                    updateBaseCurrencyAmount = false
-                }
-            }
+            .map(this::mapModel)
+            .subscribe(this::renderViewState)
         )
     }
 
@@ -37,10 +33,24 @@ class RatesPresenter @Inject constructor(private val appSchedulers: AppScheduler
     }
 
     fun onBaseCurrencyAmountChanged(newAmount: String) {
-        calculateRatesInteractor.changeBaseCurrencyAmount(newAmount)
+        val model = calculateRatesInteractor.changeBaseCurrencyAmount(newAmount)
+        renderViewState(mapModel(model))
     }
 
     fun onBaseCurrencyChanged(newBaseCurrency: CurrencyRate) {
+        updateBaseCurrencyAmount = true
+        val model = calculateRatesInteractor.changeBaseCurrency(newBaseCurrency)
+        renderViewState(mapModel(model))
+    }
 
+    private fun mapModel(model: CalculateRatesModel):RatesViewState {
+        return mapper.mapToState(model, updateBaseCurrencyAmount)
+    }
+
+    private fun renderViewState(ratesViewState: RatesViewState) {
+        viewState.renderState(ratesViewState)
+        if (updateBaseCurrencyAmount) {
+            updateBaseCurrencyAmount = false
+        }
     }
 }

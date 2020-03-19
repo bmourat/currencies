@@ -57,13 +57,14 @@ class AppModule(private val app: ConverterApp) {
     }
 
     @Provides
-    fun calculateRatesInteractor(refreshRatesInteractor: RefreshRatesInteractor,
+    fun calculateRatesInteractor(appSchedulers: AppSchedulers,
+                                 refreshRatesInteractor: RefreshRatesInteractor,
                                  currencyConverter: CurrencyConverter): CalculateRatesInteractor {
         val baseCurrency = app.resources.getString(R.string.default_base_currency)
         val initialAmount = app.resources.getInteger(R.integer.initial_convert_amount)
         return CalculateRatesInteractor(
             baseCurrency, BigDecimal(initialAmount),
-            refreshRatesInteractor, currencyConverter
+            appSchedulers, refreshRatesInteractor, currencyConverter
         )
     }
 

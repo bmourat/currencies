@@ -8,12 +8,14 @@ import ru.bmourat.converter.domain.error.Error
 import ru.bmourat.converter.domain.model.CalculateRatesModel
 import ru.bmourat.converter.domain.model.CurrencyRate
 import ru.bmourat.converter.domain.model.CurrencyRates
+import ru.bmourat.converter.utils.AppSchedulers
 import java.math.BigDecimal
 import javax.inject.Inject
 
 class CalculateRatesInteractor @Inject constructor(
     currency: CurrencyCode,
     initialAmount: BigDecimal,
+    private val appSchedulers: AppSchedulers,
     private val refreshRatesInteractor: RefreshRatesInteractor,
     private val currencyConverter: CurrencyConverter
 ) {
@@ -21,23 +23,20 @@ class CalculateRatesInteractor @Inject constructor(
     var baseCurrency: CurrencyCode = currency
     var baseCurrencyAmount: BigDecimal = initialAmount
 
-    private val recalculateSubject: PublishSubject<CalculateRatesModel> = PublishSubject.create()
     private lateinit var currenciesOrder: MutableList<CurrencyCode>
 
     fun observeCalculatedRates(): Observable<CalculateRatesModel> {
-        return Observable.merge(
-            refreshRatesInteractor.observeRates()
-                .map {
-                    it.fold(
-                        this::doOnRefreshRatesFailure,
-                        this::doOnRefreshRatesSuccess
-                    ) as CalculateRatesModel
-                },
-            recalculateSubject
-        )
+        return refreshRatesInteractor.observeRates()
+            .observeOn(appSchedulers.main())
+            .map {
+                it.fold(
+                    this::doOnRefreshRatesFailure,
+                    this::doOnRefreshRatesSuccess
+                ) as CalculateRatesModel
+            }
     }
 
-    fun changeBaseCurrencyAmount(newAmount: String) {
+    fun changeBaseCurrencyAmount(newAmount: String): CalculateRatesModel {
         val result = CalculateRatesModel.Builder()
         baseCurrencyAmount = try {
             BigDecimal(newAmount)
@@ -45,11 +44,24 @@ class CalculateRatesInteractor @Inject constructor(
             result.withError(Error.InputFormat)
             BigDecimal.ZERO
         }
-        refreshRatesInteractor.currentRates?.let {
-            val convertedList = convertCurrencies(it)
-            result.withRates(convertedList)
+        val converted = convertCurrenciesWithLastRates()
+        converted?.let{
+            result.withRates(it)
         }
-        recalculateSubject.onNext(result.build())
+        return result.build()
+    }
+
+    fun changeBaseCurrency(currencyRate: CurrencyRate): CalculateRatesModel {
+        baseCurrency = currencyRate.currency
+        baseCurrencyAmount = currencyRate.rate
+        currenciesOrder.remove(currencyRate.currency)
+        currenciesOrder.add(0,currencyRate.currency)
+        val result = CalculateRatesModel.Builder()
+        val converted = convertCurrenciesWithLastRates()
+        converted?.let{
+            result.withRates(it)
+        }
+        return result.build()
     }
 
     private fun doOnRefreshRatesSuccess(ratesModel: CurrencyRates): CalculateRatesModel {
@@ -60,11 +72,17 @@ class CalculateRatesInteractor @Inject constructor(
 
     private fun doOnRefreshRatesFailure(error: Error): CalculateRatesModel {
         val result = CalculateRatesModel.Builder().withError(error)
-        refreshRatesInteractor.currentRates?.let {
-            val convertedList = convertCurrencies(it)
-            result.withRates(convertedList)
+        val converted = convertCurrenciesWithLastRates()
+        converted?.let{
+            result.withRates(it)
         }
         return result.build()
+    }
+
+    private fun convertCurrenciesWithLastRates(): List<CurrencyRate>? {
+        return refreshRatesInteractor.currentRates?.let {
+            convertCurrencies(it)
+        }
     }
 
     private fun convertCurrencies(ratesModel: CurrencyRates): List<CurrencyRate> {
@@ -82,11 +100,6 @@ class CalculateRatesInteractor @Inject constructor(
     private fun updateCurrenciesOrder(baseCurrency: CurrencyCode, ratesModel: CurrencyRates) {
         if (!this::currenciesOrder.isInitialized) {
             createCurrenciesOrder(baseCurrency, ratesModel)
-        } else {
-            val uniqueElements = currenciesOrder.union(ratesModel.currencies())
-            if (uniqueElements.isNotEmpty()) {
-                createCurrenciesOrder(baseCurrency, ratesModel)
-            }
         }
     }
 
