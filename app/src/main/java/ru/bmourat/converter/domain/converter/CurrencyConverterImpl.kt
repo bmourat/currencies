@@ -11,7 +11,7 @@ class CurrencyConverterImpl(private val resultScale: Int): CurrencyConverter {
             toRate <= BigDecimal.ZERO) {
             return BigDecimal.ZERO;
         }
-        val valueInBaseCurrency = fromAmount.divide(fromRate, RoundingMode.HALF_EVEN)
+        val valueInBaseCurrency = fromAmount.setScale(resultScale).divide(fromRate, RoundingMode.HALF_EVEN)
         return valueInBaseCurrency.multiply(toRate).setScale(resultScale, RoundingMode.HALF_EVEN)
     }
 }

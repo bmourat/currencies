@@ -20,8 +20,9 @@ class CalculateRatesInteractor @Inject constructor(
     private val currencyConverter: CurrencyConverter
 ) {
 
-    var baseCurrency: CurrencyCode = currency
-    var baseCurrencyAmount: BigDecimal = initialAmount
+    private var baseCurrency: CurrencyCode = currency
+    private var baseCurrencyAmount: BigDecimal = initialAmount
+    private var baseCurrencyAmountStr: String = initialAmount.toString()
 
     private lateinit var currenciesOrder: MutableList<CurrencyCode>
 
@@ -37,7 +38,8 @@ class CalculateRatesInteractor @Inject constructor(
     }
 
     fun changeBaseCurrencyAmount(newAmount: String): CalculateRatesModel {
-        val result = CalculateRatesModel.Builder()
+        baseCurrencyAmountStr = newAmount
+        val result = modelBuilder()
         baseCurrencyAmount = try {
             BigDecimal(newAmount)
         }catch (error: Exception) {
@@ -54,9 +56,10 @@ class CalculateRatesInteractor @Inject constructor(
     fun changeBaseCurrency(currencyRate: CurrencyRate): CalculateRatesModel {
         baseCurrency = currencyRate.currency
         baseCurrencyAmount = currencyRate.rate
+        baseCurrencyAmountStr = baseCurrencyAmount.toString()
         currenciesOrder.remove(currencyRate.currency)
         currenciesOrder.add(0,currencyRate.currency)
-        val result = CalculateRatesModel.Builder()
+        val result = modelBuilder()
         val converted = convertCurrenciesWithLastRates()
         converted?.let{
             result.withRates(it)
@@ -67,11 +70,11 @@ class CalculateRatesInteractor @Inject constructor(
     private fun doOnRefreshRatesSuccess(ratesModel: CurrencyRates): CalculateRatesModel {
         updateCurrenciesOrder(baseCurrency, ratesModel)
         val convertedList = convertCurrencies(ratesModel)
-        return CalculateRatesModel.Builder().withRates(convertedList).build()
+        return modelBuilder().withRates(convertedList).build()
     }
 
     private fun doOnRefreshRatesFailure(error: Error): CalculateRatesModel {
-        val result = CalculateRatesModel.Builder().withError(error)
+        val result = modelBuilder().withError(error)
         val converted = convertCurrenciesWithLastRates()
         converted?.let{
             result.withRates(it)
@@ -107,6 +110,10 @@ class CalculateRatesInteractor @Inject constructor(
         currenciesOrder = ArrayList()
         currenciesOrder.add(baseCurrency)
         currenciesOrder.addAll(ratesModel.currencies().sorted().filter { it != baseCurrency })
+    }
+
+    private fun modelBuilder(): CalculateRatesModel.Builder {
+        return CalculateRatesModel.Builder(baseCurrencyAmountStr)
     }
 }
 

@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class RatesStateMapper @Inject constructor(private val currencyInfoRepository: CurrencyDisplayInfoRepository) {
 
-    fun mapToState(calculateRatesModel: CalculateRatesModel, updateBaseCurrencyAmount: Boolean): RatesViewState {
+    fun mapToState(calculateRatesModel: CalculateRatesModel, forceBaseCurrencyFocus: Boolean): RatesViewState {
         var hasConnectionError = false
         var hasInputFormatError = false
         for (error in calculateRatesModel.errors) {
@@ -25,7 +25,12 @@ class RatesStateMapper @Inject constructor(private val currencyInfoRepository: C
                 displayInfo.currencyFlag
             )
         }
-        return RatesViewState(hasConnectionError, hasInputFormatError, updateBaseCurrencyAmount, viewModels)
+        return RatesViewState(
+            hasConnectionError,
+            hasInputFormatError,
+            forceBaseCurrencyFocus,
+            calculateRatesModel.baseCurrencyAmount,
+            viewModels)
     }
 
 }

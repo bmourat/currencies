@@ -15,14 +15,13 @@ class RatesPresenter @Inject constructor(private val appSchedulers: AppScheduler
     : MvpPresenter<RatesView>() {
 
     private val disposables = CompositeDisposable()
-    private var updateBaseCurrencyAmount = true
 
     override fun attachView(view: RatesView?) {
         super.attachView(view)
         disposables.add(calculateRatesInteractor.observeCalculatedRates()
             .subscribeOn(appSchedulers.io())
             .observeOn(appSchedulers.main())
-            .map(this::mapModel)
+            .map { mapModel(it) }
             .subscribe(this::renderViewState)
         )
     }
@@ -38,19 +37,15 @@ class RatesPresenter @Inject constructor(private val appSchedulers: AppScheduler
     }
 
     fun onBaseCurrencyChanged(newBaseCurrency: CurrencyRate) {
-        updateBaseCurrencyAmount = true
         val model = calculateRatesInteractor.changeBaseCurrency(newBaseCurrency)
-        renderViewState(mapModel(model))
+        renderViewState(mapModel(model, true))
     }
 
-    private fun mapModel(model: CalculateRatesModel):RatesViewState {
-        return mapper.mapToState(model, updateBaseCurrencyAmount)
+    private fun mapModel(model: CalculateRatesModel, forceBaseCurrencyFocus: Boolean = false):RatesViewState {
+        return mapper.mapToState(model, forceBaseCurrencyFocus)
     }
 
     private fun renderViewState(ratesViewState: RatesViewState) {
         viewState.renderState(ratesViewState)
-        if (updateBaseCurrencyAmount) {
-            updateBaseCurrencyAmount = false
-        }
     }
 }

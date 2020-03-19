@@ -21,6 +21,7 @@ class RatesFragment : MvpAppCompatFragment(R.layout.fragment_converter), RatesVi
     lateinit var presenterProvider: Provider<RatesPresenter>
     private val presenter by moxyPresenter { presenterProvider.get() }
 
+    private lateinit var ratesRecycler: RecyclerView
     private lateinit var ratesAdapter: RatesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +33,7 @@ class RatesFragment : MvpAppCompatFragment(R.layout.fragment_converter), RatesVi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val ratesRecycler = view.findViewById<RecyclerView>(R.id.rv_rates)
+        ratesRecycler = view.findViewById(R.id.rv_rates)
         with(ratesRecycler) {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = ratesAdapter
@@ -41,6 +42,9 @@ class RatesFragment : MvpAppCompatFragment(R.layout.fragment_converter), RatesVi
 
     override fun renderState(viewState: RatesViewState) {
         ratesAdapter.updateState(viewState)
+        if (viewState.forceBaseCurrencyFocus) {
+            ratesRecycler.scrollToPosition(0)
+        }
     }
 
     override fun getComponent(): RatesComponent = RatesComponent.Initializer.init()

@@ -1,7 +1,6 @@
 package ru.bmourat.converter.ui.rates
 
 import android.text.Editable
-import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -14,15 +13,21 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.bmourat.converter.R
 import ru.bmourat.converter.domain.model.CurrencyRate
 import ru.bmourat.converter.utils.setReadOnly
+import ru.bmourat.converter.utils.showKeyboard
 
 class RatesAdapter(
     private val baseCurrencyAmountChanged: (newAmount: String) -> Unit,
     private val baseCurrencyChanged: (newBaseCurrency: CurrencyRate) -> Unit)
     : RecyclerView.Adapter<RatesAdapter.RateViewHolder>() {
 
-    private var items: MutableList<RateViewModel> = mutableListOf()
-    private var updateBaseCurrencyAmount = true
-    private var hasInputFormatError = false
+    private var forceBaseCurrencyFocus = false
+    private var ratesState = RatesViewState(
+        hasNetworkError = false,
+        hasInputFormatError = false,
+        forceBaseCurrencyFocus = false,
+        baseCurrencyAmount = "",
+        viewModels = emptyList()
+    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RateViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -30,9 +35,9 @@ class RatesAdapter(
         return RateViewHolder(view)
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = ratesState.viewModels.size
 
-    override fun onBindViewHolder(holder: RateViewHolder, position: Int) = holder.bind(items[position])
+    override fun onBindViewHolder(holder: RateViewHolder, position: Int) = holder.bind(ratesState.viewModels[position])
 
     override fun onBindViewHolder(holder: RateViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
@@ -40,18 +45,19 @@ class RatesAdapter(
         } else {
             for(payload in payloads) {
                 when (payload) {
-                    RatesDiffCallback.Payload.AMOUNT -> holder.bindAmount(items[position])
+                    RatesDiffCallback.Payload.AMOUNT -> holder.bindAmount(ratesState.viewModels[position])
                 }
             }
         }
     }
 
-    fun updateState(ratesState: RatesViewState) {
-        val diffResult = DiffUtil.calculateDiff(RatesDiffCallback(items, ratesState.viewModels))
-        items.clear()
-        items.addAll(ratesState.viewModels)
-        updateBaseCurrencyAmount = ratesState.updateBaseCurrencyAmount
-        hasInputFormatError = ratesState.hasInputFormatError
+    fun updateState(newRatesState: RatesViewState) {
+        val diffResult = DiffUtil.calculateDiff(
+            RatesDiffCallback(
+                forceBaseCurrencyFocus to ratesState.viewModels,
+                newRatesState.forceBaseCurrencyFocus to newRatesState.viewModels))
+        ratesState = newRatesState
+        forceBaseCurrencyFocus = newRatesState.forceBaseCurrencyFocus
         diffResult.dispatchUpdatesTo(this)
     }
 
@@ -82,14 +88,18 @@ class RatesAdapter(
         }
 
         private fun bindBaseCurrency(model: RateViewModel) {
-            val rate = model.currencyRate.rate.toString()
             with(currencyAmount) {
                 setReadOnly(false)
-                if (updateBaseCurrencyAmount) {
-                    setText(rate)
-                    setSelection(rate.length)
+                removeTextChangedListener(textWatcher)
+                if (!isFocused) {
+                    setText(ratesState.baseCurrencyAmount)
+                    setSelection(selectionEnd)
                 }
-                error = if (hasInputFormatError) {
+                if (forceBaseCurrencyFocus) {
+                    showKeyboard()
+                    forceBaseCurrencyFocus = false
+                }
+                error = if (ratesState.hasInputFormatError) {
                     itemView.resources.getString(R.string.input_format_error)
                 } else {
                     null
@@ -109,9 +119,12 @@ class RatesAdapter(
             val rate = model.currencyRate.rate.toString()
             with(currencyAmount) {
                 setReadOnly(true)
+                error = null
                 removeTextChangedListener(textWatcher)
                 setText(rate)
-                setOnClickListener{baseCurrencyChanged(model.currencyRate)}
+                setOnClickListener{
+                    baseCurrencyChanged(model.currencyRate)
+                }
             }
             with(itemView) {
                 setOnClickListener{baseCurrencyChanged(model.currencyRate)}

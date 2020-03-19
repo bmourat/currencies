@@ -62,8 +62,9 @@ class AppModule(private val app: ConverterApp) {
                                  currencyConverter: CurrencyConverter): CalculateRatesInteractor {
         val baseCurrency = app.resources.getString(R.string.default_base_currency)
         val initialAmount = app.resources.getInteger(R.integer.initial_convert_amount)
+        val resultScale = app.resources.getInteger(R.integer.conversion_result_scale)
         return CalculateRatesInteractor(
-            baseCurrency, BigDecimal(initialAmount),
+            baseCurrency, BigDecimal(initialAmount).setScale(resultScale),
             appSchedulers, refreshRatesInteractor, currencyConverter
         )
     }
