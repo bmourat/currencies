@@ -1,6 +1,7 @@
 package ru.bmourat.converter.domain.interactors
 
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 import ru.bmourat.converter.domain.CurrencyCode
 import ru.bmourat.converter.domain.converter.CurrencyConverter
 import ru.bmourat.converter.domain.error.Error
@@ -14,31 +15,51 @@ class CalculateRatesInteractor @Inject constructor(
     currency: CurrencyCode,
     initialAmount: BigDecimal,
     private val refreshRatesInteractor: RefreshRatesInteractor,
-    private val currencyConverter: CurrencyConverter)  {
+    private val currencyConverter: CurrencyConverter
+) {
 
     var baseCurrency: CurrencyCode = currency
     var baseCurrencyAmount: BigDecimal = initialAmount
 
+    private val recalculateSubject: PublishSubject<CalculateRatesModel> = PublishSubject.create()
     private lateinit var currenciesOrder: MutableList<CurrencyCode>
 
     fun observeCalculatedRates(): Observable<CalculateRatesModel> {
-        return refreshRatesInteractor.observeRates()
-            .map {
-                it.fold(
-                    this::doOnRefreshRatesFailure,
-                    this::doOnRefreshRatesSuccess
-                ) as CalculateRatesModel
-            }
+        return Observable.merge(
+            refreshRatesInteractor.observeRates()
+                .map {
+                    it.fold(
+                        this::doOnRefreshRatesFailure,
+                        this::doOnRefreshRatesSuccess
+                    ) as CalculateRatesModel
+                },
+            recalculateSubject
+        )
+    }
+
+    fun changeBaseCurrencyAmount(newAmount: String) {
+        val result = CalculateRatesModel.Builder()
+        baseCurrencyAmount = try {
+            BigDecimal(newAmount)
+        }catch (error: Exception) {
+            result.withError(Error.InputFormat)
+            BigDecimal.ZERO
+        }
+        refreshRatesInteractor.currentRates?.let {
+            val convertedList = convertCurrencies(it)
+            result.withRates(convertedList)
+        }
+        recalculateSubject.onNext(result.build())
     }
 
     private fun doOnRefreshRatesSuccess(ratesModel: CurrencyRates): CalculateRatesModel {
-        updateCurrenciesOrder(baseCurrency, ratesModel);
+        updateCurrenciesOrder(baseCurrency, ratesModel)
         val convertedList = convertCurrencies(ratesModel)
         return CalculateRatesModel.Builder().withRates(convertedList).build()
     }
 
     private fun doOnRefreshRatesFailure(error: Error): CalculateRatesModel {
-        val result = CalculateRatesModel.Builder().withError(error);
+        val result = CalculateRatesModel.Builder().withError(error)
         refreshRatesInteractor.currentRates?.let {
             val convertedList = convertCurrencies(it)
             result.withRates(convertedList)

@@ -14,4 +14,9 @@
         app:titleTextAppearance="@style/ToolbarTitleStyle"
         app:titleMarginStart="@dimen/start_margin_toolbar_title"
         />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_rates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

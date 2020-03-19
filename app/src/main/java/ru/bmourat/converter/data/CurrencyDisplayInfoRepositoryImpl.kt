@@ -2,7 +2,7 @@ package ru.bmourat.converter.data
 
 import android.content.res.Resources
 import ru.bmourat.converter.R
-import ru.bmourat.converter.domain.model.CurrencyCode
+import ru.bmourat.converter.domain.CurrencyCode
 import ru.bmourat.converter.domain.model.CurrencyDisplayInfo
 import ru.bmourat.converter.domain.repositories.CurrencyDisplayInfoRepository
 
