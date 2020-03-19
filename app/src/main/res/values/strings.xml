@@ -2,5 +2,6 @@
     <string name="app_name">Currency Converter</string>
     <string name="converter_fragment_title">Rates</string>
     <string name="input_format_error">Please, enter a valid amount</string>
-    <string name="network_connection_error">Connection error, calculating with previous rates</string>
+    <string name="network_connection_error">Connection error, trying to connect</string>
+    <string name="network_connection_error_with_result">Connection error, calculating with previous rates</string>
 </resources>

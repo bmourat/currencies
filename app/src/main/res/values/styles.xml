@@ -11,4 +11,8 @@
     <item name="android:textColor">@android:color/black</item>
   </style>
 
+  <style name="ActiveEditTextStyle">
+    <item name="android:textColor">@drawable/active_edit_text_color</item>
+    <item name="backgroundTint">@drawable/active_edit_line_color</item>
+  </style>
 </resources>
