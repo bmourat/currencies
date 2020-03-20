@@ -1,5 +1,6 @@
 package ru.bmourat.converter.domain.interactors
 
+import androidx.annotation.VisibleForTesting
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.PublishSubject
 import ru.bmourat.converter.domain.CurrencyCode
@@ -20,11 +21,17 @@ class CalculateRatesInteractor @Inject constructor(
     private val currencyConverter: CurrencyConverter
 ) {
 
-    private var baseCurrency: CurrencyCode = currency
-    private var baseCurrencyAmount: BigDecimal = initialAmount
-    private var baseCurrencyAmountStr: String = initialAmount.toString()
+    var baseCurrency: CurrencyCode = currency
+        private set
+    var baseCurrencyAmount: BigDecimal = initialAmount
+        private set
+    var baseCurrencyAmountStr: String = initialAmount.toString()
+        private set
 
-    private lateinit var currenciesOrder: MutableList<CurrencyCode>
+    @VisibleForTesting
+    open var currenciesOrder: MutableList<CurrencyCode> = mutableListOf()
+        private set
+
 
     fun observeCalculatedRates(): Observable<CalculateRatesModel> {
         return refreshRatesInteractor.observeRates()
@@ -101,7 +108,7 @@ class CalculateRatesInteractor @Inject constructor(
     }
 
     private fun updateCurrenciesOrder(baseCurrency: CurrencyCode, ratesModel: CurrencyRates) {
-        if (!this::currenciesOrder.isInitialized) {
+        if (currenciesOrder.isEmpty()) {
             createCurrenciesOrder(baseCurrency, ratesModel)
         }
     }

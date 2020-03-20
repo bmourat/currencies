@@ -2,7 +2,7 @@ package ru.bmourat.converter.domain.model
 
 import ru.bmourat.converter.domain.error.Error
 
-class CalculateRatesModel private constructor(
+data class CalculateRatesModel private constructor(
     val baseCurrencyAmount: String,
     val calculatedRates: List<CurrencyRate>,
     val errors: List<Error>) {
