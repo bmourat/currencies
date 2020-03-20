@@ -1,5 +1,6 @@
 package ru.bmourat.converter.ui.rates.mvp
 
+import android.util.Log
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import moxy.MvpPresenter
 import ru.bmourat.converter.domain.interactors.CalculateRatesInteractor
@@ -14,6 +15,7 @@ class RatesPresenter @Inject constructor(private val appSchedulers: AppScheduler
 )
     : MvpPresenter<RatesView>() {
 
+    private val logTag = RatesPresenter::class.java.simpleName
     private val disposables = CompositeDisposable()
 
     override fun attachView(view: RatesView?) {
@@ -22,7 +24,10 @@ class RatesPresenter @Inject constructor(private val appSchedulers: AppScheduler
             .subscribeOn(appSchedulers.io())
             .observeOn(appSchedulers.main())
             .map { mapModel(it) }
-            .subscribe(this::renderViewState)
+            .subscribe(
+                this::renderViewState,
+                this::handleError
+            )
         )
     }
 
@@ -47,5 +52,13 @@ class RatesPresenter @Inject constructor(private val appSchedulers: AppScheduler
 
     private fun renderViewState(ratesViewState: RatesViewState) {
         viewState.renderState(ratesViewState)
+    }
+
+    /**
+     * This should not be called as we manage all errors before
+     * presenter. But in case we missed something :)
+     */
+    private fun handleError(throwable: Throwable) {
+        Log.e(logTag, "Received an error $throwable")
     }
 }
