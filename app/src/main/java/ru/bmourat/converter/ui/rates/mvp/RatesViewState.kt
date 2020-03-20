@@ -1,4 +1,6 @@
-package ru.bmourat.converter.ui.rates
+package ru.bmourat.converter.ui.rates.mvp
+
+import ru.bmourat.converter.ui.rates.mvp.RateViewModel
 
 class RatesViewState (
     val hasNetworkError: Boolean,

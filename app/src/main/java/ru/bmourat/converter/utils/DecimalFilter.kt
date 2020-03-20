@@ -1,4 +1,4 @@
-package ru.bmourat.converter.ui.rates
+package ru.bmourat.converter.utils
 
 import android.text.InputFilter
 import android.text.Spanned

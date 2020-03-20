@@ -13,7 +13,11 @@ import me.vponomarenko.injectionmanager.x.XInjectionManager
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.bmourat.converter.R
+import ru.bmourat.converter.ui.rates.adapter.RatesAdapter
 import ru.bmourat.converter.ui.rates.di.RatesComponent
+import ru.bmourat.converter.ui.rates.mvp.RatesPresenter
+import ru.bmourat.converter.ui.rates.mvp.RatesView
+import ru.bmourat.converter.ui.rates.mvp.RatesViewState
 import javax.inject.Inject
 import javax.inject.Provider
 

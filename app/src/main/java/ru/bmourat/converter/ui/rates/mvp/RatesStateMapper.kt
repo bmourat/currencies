@@ -1,4 +1,4 @@
-package ru.bmourat.converter.ui.rates
+package ru.bmourat.converter.ui.rates.mvp
 
 import ru.bmourat.converter.domain.model.CalculateRatesModel
 import ru.bmourat.converter.domain.repositories.CurrencyDisplayInfoRepository
@@ -30,7 +30,8 @@ class RatesStateMapper @Inject constructor(private val currencyInfoRepository: C
             hasInputFormatError,
             forceBaseCurrencyFocus,
             calculateRatesModel.baseCurrencyAmount,
-            viewModels)
+            viewModels
+        )
     }
 
 }

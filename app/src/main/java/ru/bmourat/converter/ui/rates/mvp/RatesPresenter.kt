@@ -1,4 +1,4 @@
-package ru.bmourat.converter.ui.rates
+package ru.bmourat.converter.ui.rates.mvp
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import moxy.MvpPresenter
@@ -41,7 +41,7 @@ class RatesPresenter @Inject constructor(private val appSchedulers: AppScheduler
         renderViewState(mapModel(model, true))
     }
 
-    private fun mapModel(model: CalculateRatesModel, forceBaseCurrencyFocus: Boolean = false):RatesViewState {
+    private fun mapModel(model: CalculateRatesModel, forceBaseCurrencyFocus: Boolean = false): RatesViewState {
         return mapper.mapToState(model, forceBaseCurrencyFocus)
     }
 

@@ -1,4 +1,4 @@
-package ru.bmourat.converter.ui.rates
+package ru.bmourat.converter.ui.rates.mvp
 
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy

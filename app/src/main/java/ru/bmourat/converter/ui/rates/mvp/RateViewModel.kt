@@ -1,4 +1,4 @@
-package ru.bmourat.converter.ui.rates
+package ru.bmourat.converter.ui.rates.mvp
 
 import androidx.annotation.DrawableRes
 import ru.bmourat.converter.domain.model.CurrencyRate

@@ -1,4 +1,4 @@
-package ru.bmourat.converter.ui.rates
+package ru.bmourat.converter.ui.rates.adapter
 
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.bmourat.converter.R
 import ru.bmourat.converter.domain.model.CurrencyRate
+import ru.bmourat.converter.ui.rates.mvp.RateViewModel
+import ru.bmourat.converter.ui.rates.mvp.RatesViewState
+import ru.bmourat.converter.utils.DecimalFilter
 import ru.bmourat.converter.utils.showKeyboard
 
 class RatesAdapter(

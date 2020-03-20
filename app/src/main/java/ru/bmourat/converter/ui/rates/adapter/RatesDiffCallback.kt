@@ -1,6 +1,7 @@
-package ru.bmourat.converter.ui.rates
+package ru.bmourat.converter.ui.rates.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import ru.bmourat.converter.ui.rates.mvp.RateViewModel
 
 class RatesDiffCallback(
     private val oldItems: Pair<Boolean, List<RateViewModel>>,
